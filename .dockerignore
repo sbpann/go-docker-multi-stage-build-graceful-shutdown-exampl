@@ -1,0 +1,6 @@
+# non build file
+.idea
+LICENSE
+README.md
+.gitignore
+*.iml
