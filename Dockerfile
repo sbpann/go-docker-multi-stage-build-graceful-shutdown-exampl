@@ -1,4 +1,4 @@
-FROM golang:1.16.7-alpine3.14
+FROM golang:1.17-alpine3.14
 
 ENV GOOS=linux
 ENV GOARCH=amd64
@@ -19,5 +19,5 @@ FROM alpine:3.14
 ENV GIN_MODE=release
 RUN apk --no-cache add ca-certificates
 WORKDIR /app
-COPY --from=0 /go/src/github.com/sbpann/go-docker-multi-stage-build-graceful-shutdown-example.
+COPY --from=0 /go/src/github.com/sbpann/go-docker-multi-stage-build-graceful-shutdown-example .
 ENTRYPOINT ["./app"]
