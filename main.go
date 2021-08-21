@@ -2,13 +2,14 @@ package main
 
 import (
 	"context"
-	"github.com/gin-gonic/gin"
-	"github.com/sbpann/go-docker-multi-stage-build-graceful-shutdown-example/helpers"
 	"log"
 	"net/http"
 	"os"
 	"syscall"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/sbpann/go-docker-multi-stage-build-graceful-shutdown-example/helpers"
 )
 
 func main() {
@@ -23,16 +24,16 @@ func main() {
 
 	server := helpers.HttpServerFromGinEngine(r)
 
-	// run server in another goroutine to avoid blocking
 	startServer := func(server *http.Server, callback func()) {
 		callback()
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("start server error: %s\n", err)
 		}
 	}
-	go startServer(server, func() {log.Println("Starting server")})
+	// run server in another goroutine to avoid blocking
+	go startServer(server, func() { log.Println("Starting server") })
 
-	serverRestarter := func(osSignal chan os.Signal, server *http.Server) *http.Server{
+	serverRestarter := func(osSignal chan os.Signal, server *http.Server) *http.Server {
 		newServer := helpers.HttpServerFromGinEngine(r)
 		helpers.SignalNotify(&helpers.SignalNotifyArgs{
 			OSSignal: osSignal,
@@ -51,7 +52,7 @@ func main() {
 				log.Printf("Server has restarted %d times\n", restarted)
 				restarted++
 				if restarted <= maxRestart {
-					go startServer(newServer, func() {log.Println("Restarting server...")})
+					go startServer(newServer, func() { log.Println("Restarting server...") })
 				}
 			},
 		})
